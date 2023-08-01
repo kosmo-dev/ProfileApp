@@ -59,6 +59,7 @@ final class ViewController: UIViewController {
         collectionView.register(ProfileCollectionViewCell.self, forCellWithReuseIdentifier: "ProfileCollectionViewCell")
         collectionView.register(SkillCollectionViewCell.self, forCellWithReuseIdentifier: "SkillCollectionViewCell")
         collectionView.register(DescriptionCollectionViewCell.self, forCellWithReuseIdentifier: "DescriptionCollectionViewCell")
+        collectionView.register(AddNewCollectionViewCell.self, forCellWithReuseIdentifier: "AddNewCollectionViewCell")
         collectionView.register(HeaderCollectionView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "HeaderCollectionView")
     }
 }
@@ -70,7 +71,11 @@ extension ViewController: UICollectionViewDataSource {
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section == 1 {
-            return skills.count
+            if isEditingMode {
+                return skills.count + 1
+            } else {
+                return skills.count
+            }
         } else {
             return 1
         }
@@ -82,10 +87,15 @@ extension ViewController: UICollectionViewDataSource {
             cell?.configureCell()
             return cell ?? UICollectionViewCell()
         } else if indexPath.section == 1 {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SkillCollectionViewCell", for: indexPath) as? SkillCollectionViewCell
-            cell?.configureCell(viewModel: skills[indexPath.row], visibleButtons: isEditingMode, row: indexPath.row)
-            cell?.delegate = self
-            return cell ?? UICollectionViewCell()
+            if indexPath.row == skills.count {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AddNewCollectionViewCell", for: indexPath) as? AddNewCollectionViewCell
+                return cell ?? UICollectionViewCell()
+            } else {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SkillCollectionViewCell", for: indexPath) as? SkillCollectionViewCell
+                cell?.configureCell(viewModel: skills[indexPath.row], visibleButtons: isEditingMode, row: indexPath.row)
+                cell?.delegate = self
+                return cell ?? UICollectionViewCell()
+            }
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DescriptionCollectionViewCell", for: indexPath) as? DescriptionCollectionViewCell
             let text = "Experienced software engineer skilled in developing scalable and maintainable systems"
@@ -116,6 +126,9 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
         if indexPath.section == 0 {
             return CGSize(width: collectionView.bounds.width, height: 310)
         } else if indexPath.section == 1 {
+            if indexPath.row == skills.count {
+                return CGSize(width: 57, height: 44)
+            }
             let width = skills[indexPath.row].title.width() + 24 * 3
             return CGSize(width: width, height: 44)
         } else {
