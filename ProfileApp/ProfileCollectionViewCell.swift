@@ -31,6 +31,8 @@ final class ProfileCollectionViewCell: UICollectionViewCell {
         let name = UILabel()
         name.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         name.textColor = .textColor
+        name.numberOfLines = 0
+        name.textAlignment = .center
         name.translatesAutoresizingMaskIntoConstraints = false
         return name
     }()

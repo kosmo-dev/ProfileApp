@@ -42,11 +42,12 @@ final class HeaderCollectionView: UICollectionReusableView {
         addSubview(button)
 
         NSLayoutConstraint.activate([
-            title.centerYAnchor.constraint(equalTo: centerYAnchor),
-            title.leadingAnchor.constraint(equalTo: leadingAnchor),
+            title.topAnchor.constraint(equalTo: topAnchor),
+            title.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            title.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4),
 
             button.leadingAnchor.constraint(equalTo: title.trailingAnchor),
-            button.trailingAnchor.constraint(equalTo: trailingAnchor),
+            button.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             button.heightAnchor.constraint(equalToConstant: 24),
             button.widthAnchor.constraint(equalToConstant: 24)
         ])

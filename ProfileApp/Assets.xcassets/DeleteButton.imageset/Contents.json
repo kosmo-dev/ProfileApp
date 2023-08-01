@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "EditButton.svg",
+      "filename" : "DeleteButton.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "EditButton@2x.svg",
+      "filename" : "DeleteButton@2x.svg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "EditButton@3x.svg",
+      "filename" : "DeleteButton@3x.svg",
       "idiom" : "universal",
       "scale" : "3x"
     }
