@@ -70,7 +70,9 @@ class Presenter: PresenterProtocol {
                 skillsViewModel.append(SkillCellViewModel(title: title, width: width, isTransparent: false))
                 availableWidth = availableWidth - width - 12
             } else {
-                skillsViewModel.append(SkillCellViewModel(title: "", width: availableWidth, isTransparent: true))
+                if availableWidth > 0 {
+                    skillsViewModel.append(SkillCellViewModel(title: "", width: availableWidth, isTransparent: true))
+                }
                 if width > viewWidth {
                     width = viewWidth
                 }
