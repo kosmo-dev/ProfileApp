@@ -83,7 +83,8 @@ extension ViewController: UICollectionViewDataSource {
             return cell ?? UICollectionViewCell()
         } else if indexPath.section == 1 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SkillCollectionViewCell", for: indexPath) as? SkillCollectionViewCell
-            cell?.configureCell(viewModel: skills[indexPath.row], visibleButtons: isEditingMode)
+            cell?.configureCell(viewModel: skills[indexPath.row], visibleButtons: isEditingMode, row: indexPath.row)
+            cell?.delegate = self
             return cell ?? UICollectionViewCell()
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DescriptionCollectionViewCell", for: indexPath) as? DescriptionCollectionViewCell
@@ -149,6 +150,13 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
 extension ViewController: HeaderCollectionViewDelegate {
     func didTapHeaderButton() {
         isEditingMode.toggle()
+        collectionView.reloadData()
+    }
+}
+
+extension ViewController: SkillCollectionViewCellDelegate {
+    func didTapDeleteButton(for row: Int) {
+        skills.remove(at: row)
         collectionView.reloadData()
     }
 }

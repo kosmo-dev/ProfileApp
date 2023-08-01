@@ -7,7 +7,13 @@
 
 import UIKit
 
+protocol SkillCollectionViewCellDelegate: AnyObject {
+    func didTapDeleteButton(for row: Int)
+}
+
 final class SkillCollectionViewCell: UICollectionViewCell {
+    weak var delegate: SkillCollectionViewCellDelegate?
+
     let title: UILabel = {
         let title = UILabel()
         title.font = UIFont.systemFont(ofSize: 14, weight: .regular)
@@ -22,6 +28,7 @@ final class SkillCollectionViewCell: UICollectionViewCell {
         deleteButton.setImage(UIImage(named: "DeleteButton"), for: .normal)
         deleteButton.imageView?.contentMode = .scaleAspectFill
         deleteButton.isHidden = true
+        deleteButton.addTarget(nil, action: #selector(didTapDeleteButton), for: .touchUpInside)
         deleteButton.translatesAutoresizingMaskIntoConstraints = false
         return deleteButton
     }()
@@ -34,6 +41,8 @@ final class SkillCollectionViewCell: UICollectionViewCell {
         return stackView
     }()
 
+    private var row: Int?
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureView()
@@ -43,7 +52,7 @@ final class SkillCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configureCell(viewModel: SkillCellViewModel, visibleButtons: Bool) {
+    func configureCell(viewModel: SkillCellViewModel, visibleButtons: Bool, row: Int) {
         title.text = viewModel.title
         if visibleButtons {
             deleteButton.isHidden = false
@@ -52,6 +61,7 @@ final class SkillCollectionViewCell: UICollectionViewCell {
             deleteButton.isHidden = true
             stackView.removeArrangedSubview(deleteButton)
         }
+        self.row = row
     }
 
     private func configureView() {
@@ -72,5 +82,11 @@ final class SkillCollectionViewCell: UICollectionViewCell {
             deleteButton.widthAnchor.constraint(equalToConstant: 14),
             deleteButton.heightAnchor.constraint(equalToConstant: 14)
         ])
+    }
+
+    @objc private func didTapDeleteButton() {
+        if let row {
+            delegate?.didTapDeleteButton(for: row)
+        }
     }
 }
