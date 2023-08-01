@@ -26,8 +26,8 @@ final class DescriptionCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureCell(_ text: String) {
-        self.aboutText.text = text
+    func configureCell() {
+        self.aboutText.text = "Занимаюсь разработкой на iOS на протяжении двух лет: за это время программирование из хобби и самостоятельного изучения по профильной литературе и видео-курсам стало моей текущей карьерной целью. Сейчас я прохожу специализированные курсы на онлайн-платформах, веду несколько домашних проектов и участвую в жизни местного iOS-комьюнити."
     }
 
     func configureView() {
@@ -37,7 +37,6 @@ final class DescriptionCollectionViewCell: UICollectionViewCell {
             aboutText.topAnchor.constraint(equalTo: topAnchor),
             aboutText.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             aboutText.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
-//            aboutText.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8)
         ])
     }
 }

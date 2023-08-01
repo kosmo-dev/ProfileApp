@@ -16,12 +16,21 @@ protocol PresenterProtocol {
 }
 
 class Presenter: PresenterProtocol {
+    // MARK: - Public Properties
     weak var viewController: ViewControllerProtocol?
-
-    private var skills = ["MVI/MVVM", "Kotlin Coroutines", "Room", "OkHttp", "DataStore", "WorkManager", "custom view", "DataStore", "ООП и SOLID"]
     private(set) var skillsViewModel: [SkillCellViewModel] = []
 
+    // MARK: - Private Properties
+    private var skills = ["MVI/MVVM", "Kotlin Coroutines", "Room", "OkHttp", "DataStore", "WorkManager", "custom view", "DataStore", "ООП и SOLID"]
+    private var oldSkillsViewModel: [SkillCellViewModel] = []
+    private var insertedIndexes: [IndexPath] = []
+    private var removedIndexes: [IndexPath] = []
+
+    // MARK: - Public Methods
     func addNewSkill(_ skill: String) {
+        guard checkRepeatingSkill(skill) == false else {
+            return
+        }
         skills.append(skill)
         createViewModel()
     }
@@ -38,6 +47,7 @@ class Presenter: PresenterProtocol {
         guard let viewController else {
             return
         }
+        oldSkillsViewModel = skillsViewModel
         skillsViewModel.removeAll()
         let viewWidth: CGFloat = viewController.collectionViewWidth
         var availableWidth = viewWidth
@@ -71,6 +81,7 @@ class Presenter: PresenterProtocol {
         viewController.reloadCollectionView()
     }
 
+    // MARK: - Private Methods
     private func calculateWidth(index: Int) -> CGFloat {
         if index == skills.count {
             return 57
@@ -88,5 +99,14 @@ class Presenter: PresenterProtocol {
             return ""
         }
         return skills[index]
+    }
+
+    private func checkRepeatingSkill(_ skill: String) -> Bool {
+        if skills.first(where: { $0.lowercased() == skill.lowercased() }) != nil {
+            viewController?.showAlert()
+            return true
+        } else {
+            return false
+        }
     }
 }

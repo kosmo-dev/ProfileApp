@@ -11,9 +11,11 @@ protocol ViewControllerProtocol: AnyObject {
     var collectionViewWidth: CGFloat { get }
     var isEditingMode: Bool { get }
     func reloadCollectionView()
+    func showAlert()
 }
 
 final class ViewController: UIViewController {
+    // MARK: - Public Properties
     var collectionViewWidth: CGFloat {
         collectionView.bounds.width - 16 * 2
     }
@@ -119,8 +121,7 @@ extension ViewController: UICollectionViewDataSource {
             }
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DescriptionCollectionViewCell", for: indexPath) as? DescriptionCollectionViewCell
-            let text = "Experienced software engineer skilled in developing scalable and maintainable systems"
-            cell?.configureCell(text)
+            cell?.configureCell()
             collectionViewCell = cell
         }
 
@@ -149,7 +150,7 @@ extension ViewController: UICollectionViewDataSource {
 extension ViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if indexPath.section == 0 {
-            return CGSize(width: collectionView.bounds.width, height: 310)
+            return CGSize(width: collectionView.bounds.width, height: 350)
         } else if indexPath.section == 1 {
             let width = presenter.skillsViewModel[indexPath.row].width
             return CGSize(width: width, height: 44)
@@ -166,10 +167,6 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 12
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 12
     }
 
@@ -234,6 +231,13 @@ extension ViewController: SkillCollectionViewCellDelegate {
 
 // MARK: - ViewControllerProtocol
 extension ViewController: ViewControllerProtocol {
+    func showAlert() {
+        let alertController = UIAlertController(title: "Ошибка", message: "Этот навык уже есть в списке", preferredStyle: .alert)
+        let cancel = UIAlertAction(title: "Отмена", style: .default)
+        alertController.addAction(cancel)
+        present(alertController, animated: true)
+    }
+
     func reloadCollectionView() {
         collectionView.reloadData()
     }

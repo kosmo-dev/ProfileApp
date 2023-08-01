@@ -41,6 +41,7 @@ final class ProfileCollectionViewCell: UICollectionViewCell {
         let description = UILabel()
         description.font = UIFont.systemFont(ofSize: 14, weight: .regular)
         description.textColor = .textGrayColor
+        description.textAlignment = .center
         description.translatesAutoresizingMaskIntoConstraints = false
         return description
     }()
@@ -80,9 +81,9 @@ final class ProfileCollectionViewCell: UICollectionViewCell {
 
     func configureCell() {
         title.text = "Профиль"
-        name.text = "Иванов Иван Иванович"
-        descriptionLabel.text = "Middle iOS-разработчик, опыт более 2-х лет"
-        geotagLabel.text = "Воронеж"
+        name.text = "Кузьмин Вадим Андреевич"
+        descriptionLabel.text = "Junior iOS-разработчик, опыт более 2-х лет"
+        geotagLabel.text = "Москва"
     }
 
     private func configureView() {
