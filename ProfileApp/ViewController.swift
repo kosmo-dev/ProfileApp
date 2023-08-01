@@ -60,7 +60,8 @@ final class ViewController: UIViewController {
         collectionView.register(SkillCollectionViewCell.self, forCellWithReuseIdentifier: "SkillCollectionViewCell")
         collectionView.register(DescriptionCollectionViewCell.self, forCellWithReuseIdentifier: "DescriptionCollectionViewCell")
         collectionView.register(AddNewCollectionViewCell.self, forCellWithReuseIdentifier: "AddNewCollectionViewCell")
-        collectionView.register(HeaderCollectionView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "HeaderCollectionView")
+        collectionView.register(HeaderCollectionView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "SkillsHeaderCollectionView")
+        collectionView.register(HeaderCollectionView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AboutHeaderCollectionView")
     }
 }
 
@@ -106,12 +107,12 @@ extension ViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if indexPath.section == 1 {
-            let view = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "HeaderCollectionView", for: indexPath) as? HeaderCollectionView
+            let view = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "SkillsHeaderCollectionView", for: indexPath) as? HeaderCollectionView
             view?.delegate = self
             view?.configureHeader(with: "Мои навыки", isButtonVisible: true)
             return view ?? UICollectionReusableView()
         } else if indexPath.section == 2 {
-            let view = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "HeaderCollectionView", for: indexPath) as? HeaderCollectionView
+            let view = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AboutHeaderCollectionView", for: indexPath) as? HeaderCollectionView
             view?.configureHeader(with: "О себе", isButtonVisible: false)
             return view ?? UICollectionReusableView()
         } else {
@@ -160,6 +161,43 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
+// MARK: - UICollectionViewDelegate
+extension ViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if isEditingMode, indexPath.row == skills.count {
+            showAlertController()
+        }
+    }
+
+    private func showAlertController() {
+        let alertController = UIAlertController(title: "Добавление навыка", message: "Введите название навыка, которым вы владеете", preferredStyle: .alert)
+        let cancel = UIAlertAction(title: "Отмена", style: .default)
+        let add = UIAlertAction(title: "Добавить", style: .default) { [weak self] _ in
+            guard let self else {
+                return
+            }
+            self.addNewSkillFromTextFieldInAlert(alertController)
+        }
+        alertController.addAction(cancel)
+        alertController.addAction(add)
+        alertController.addTextField { textField in
+            textField.placeholder = "Введите название"
+        }
+        present(alertController, animated: true)
+    }
+
+    private func addNewSkillFromTextFieldInAlert(_ alertController: UIAlertController) {
+        guard let textField = alertController.textFields?.first,
+              let text = textField.text
+        else {
+            return
+        }
+        skills.append(SkillCellViewModel(title: text, isButtonVisible: false))
+        collectionView.reloadData()
+    }
+}
+
+// MARK: - HeaderCollectionViewDelegate
 extension ViewController: HeaderCollectionViewDelegate {
     func didTapHeaderButton() {
         isEditingMode.toggle()
@@ -167,6 +205,7 @@ extension ViewController: HeaderCollectionViewDelegate {
     }
 }
 
+// MARK: - SkillCollectionViewCellDelegate
 extension ViewController: SkillCollectionViewCellDelegate {
     func didTapDeleteButton(for row: Int) {
         skills.remove(at: row)
