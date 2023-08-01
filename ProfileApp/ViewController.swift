@@ -16,7 +16,19 @@ final class ViewController: UIViewController {
         return collectionView
     }()
 
-    private var skills = ["MVI/MVVM", "Kotlin Coroutines", "Room", "OkHttp", "DataStore", "WorkManager", "custom view", "DataStore", "ООП и SOLID"]
+    private var skills = [
+        SkillCellViewModel(title: "MVI/MVVM", isButtonVisible: true),
+        SkillCellViewModel(title: "Kotlin Coroutines", isButtonVisible: true),
+        SkillCellViewModel(title: "Room", isButtonVisible: true),
+        SkillCellViewModel(title: "OkHttp", isButtonVisible: true),
+        SkillCellViewModel(title: "DataStore", isButtonVisible: true),
+        SkillCellViewModel(title: "WorkManager", isButtonVisible: true),
+        SkillCellViewModel(title: "custom view", isButtonVisible: true),
+        SkillCellViewModel(title: "DataStore", isButtonVisible: true),
+        SkillCellViewModel(title: "ООП и SOLID", isButtonVisible: true),
+    ]
+
+    private var isEditingMode = false
 
     // MARK: - View Life Cycle
     override func viewDidLoad() {
@@ -57,9 +69,7 @@ extension ViewController: UICollectionViewDataSource {
         return 3
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section == 0 {
-            return 1
-        } else if section == 1 {
+        if section == 1 {
             return skills.count
         } else {
             return 1
@@ -73,7 +83,7 @@ extension ViewController: UICollectionViewDataSource {
             return cell ?? UICollectionViewCell()
         } else if indexPath.section == 1 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SkillCollectionViewCell", for: indexPath) as? SkillCollectionViewCell
-            cell?.configureCell(skills[indexPath.row])
+            cell?.configureCell(viewModel: skills[indexPath.row], visibleButtons: isEditingMode)
             return cell ?? UICollectionViewCell()
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DescriptionCollectionViewCell", for: indexPath) as? DescriptionCollectionViewCell
@@ -86,11 +96,12 @@ extension ViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if indexPath.section == 1 {
             let view = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "HeaderCollectionView", for: indexPath) as? HeaderCollectionView
-            view?.configureHeader(with: "Мои навыки")
+            view?.delegate = self
+            view?.configureHeader(with: "Мои навыки", isButtonVisible: true)
             return view ?? UICollectionReusableView()
         } else if indexPath.section == 2 {
             let view = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "HeaderCollectionView", for: indexPath) as? HeaderCollectionView
-            view?.configureHeader(with: "О себе")
+            view?.configureHeader(with: "О себе", isButtonVisible: false)
             return view ?? UICollectionReusableView()
         } else {
             return UICollectionReusableView()
@@ -104,7 +115,7 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
         if indexPath.section == 0 {
             return CGSize(width: collectionView.bounds.width, height: 310)
         } else if indexPath.section == 1 {
-            let width = skills[indexPath.row].width() + 24 * 3
+            let width = skills[indexPath.row].title.width() + 24 * 3
             return CGSize(width: width, height: 44)
         } else {
             return CGSize(width: collectionView.bounds.width, height: 200)
@@ -132,6 +143,13 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
         } else {
             return .zero
         }
+    }
+}
+
+extension ViewController: HeaderCollectionViewDelegate {
+    func didTapHeaderButton() {
+        isEditingMode.toggle()
+        collectionView.reloadData()
     }
 }
 

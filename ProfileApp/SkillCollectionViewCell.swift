@@ -21,8 +21,17 @@ final class SkillCollectionViewCell: UICollectionViewCell {
         deleteButton.setTitle("", for: .normal)
         deleteButton.setImage(UIImage(named: "DeleteButton"), for: .normal)
         deleteButton.imageView?.contentMode = .scaleAspectFill
+        deleteButton.isHidden = true
         deleteButton.translatesAutoresizingMaskIntoConstraints = false
         return deleteButton
+    }()
+
+    let stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 10
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }()
 
     override init(frame: CGRect) {
@@ -34,8 +43,15 @@ final class SkillCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configureCell(_ text: String) {
-        title.text = text
+    func configureCell(viewModel: SkillCellViewModel, visibleButtons: Bool) {
+        title.text = viewModel.title
+        if visibleButtons {
+            deleteButton.isHidden = false
+            stackView.addArrangedSubview(deleteButton)
+        } else {
+            deleteButton.isHidden = true
+            stackView.removeArrangedSubview(deleteButton)
+        }
     }
 
     private func configureView() {
@@ -43,17 +59,16 @@ final class SkillCollectionViewCell: UICollectionViewCell {
         layer.cornerRadius = 12
         layer.masksToBounds = true
 
-        addSubview(title)
-        addSubview(deleteButton)
+        addSubview(stackView)
+
+        stackView.addArrangedSubview(title)
 
         NSLayoutConstraint.activate([
-            title.topAnchor.constraint(equalTo: topAnchor, constant: 12),
-            title.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 24),
-            title.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12),
+            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 12),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 24),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -24),
+            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12),
 
-            deleteButton.leadingAnchor.constraint(equalTo: title.trailingAnchor, constant: 10),
-            deleteButton.centerYAnchor.constraint(equalTo: centerYAnchor),
-            deleteButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -24),
             deleteButton.widthAnchor.constraint(equalToConstant: 14),
             deleteButton.heightAnchor.constraint(equalToConstant: 14)
         ])
