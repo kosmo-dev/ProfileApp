@@ -109,11 +109,11 @@ extension ViewController: UICollectionViewDataSource {
         if indexPath.section == 1 {
             let view = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "SkillsHeaderCollectionView", for: indexPath) as? HeaderCollectionView
             view?.delegate = self
-            view?.configureHeader(with: "Мои навыки", isButtonVisible: true)
+            view?.configureHeader(with: "Мои навыки", isButtonVisible: true, isEditingMode: isEditingMode)
             return view ?? UICollectionReusableView()
         } else if indexPath.section == 2 {
             let view = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AboutHeaderCollectionView", for: indexPath) as? HeaderCollectionView
-            view?.configureHeader(with: "О себе", isButtonVisible: false)
+            view?.configureHeader(with: "О себе", isButtonVisible: false, isEditingMode: isEditingMode)
             return view ?? UICollectionReusableView()
         } else {
             return UICollectionReusableView()

@@ -40,10 +40,15 @@ final class HeaderCollectionView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configureHeader(with text: String, isButtonVisible: Bool) {
+    func configureHeader(with text: String, isButtonVisible: Bool, isEditingMode: Bool) {
         title.text = text
-        if isButtonVisible {
+        if isEditingMode {
+            button.setImage(UIImage(named: "ConfirmButton"), for: .normal)
+        } else {
             button.setImage(UIImage(named: "EditButton"), for: .normal)
+        }
+
+        if isButtonVisible {
             button.isHidden = false
         }
     }
