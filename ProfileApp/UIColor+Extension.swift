@@ -9,4 +9,6 @@ import UIKit
 
 extension UIColor {
     static let background = UIColor(named: "BackgroundColor")
+    static let textColor = UIColor(named: "TextColor")
+    static let textGrayColor = UIColor(named: "TextGrayColor")
 }

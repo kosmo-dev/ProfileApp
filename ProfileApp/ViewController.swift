@@ -10,7 +10,7 @@ import UIKit
 final class ViewController: UIViewController {
     // MARK: - Private Properties
     private var collectionView: UICollectionView = {
-        let collectionView = UICollectionView(frame: .zero)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.showsVerticalScrollIndicator = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
@@ -19,13 +19,15 @@ final class ViewController: UIViewController {
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        registerCells()
         configureView()
         configureConstraints()
     }
 
     // MARK: - Private Methods
     private func configureView() {
-        navigationItem.title = "Profile"
         view.backgroundColor = .background
         view.addSubview(collectionView)
     }
@@ -40,7 +42,28 @@ final class ViewController: UIViewController {
     }
 
     private func registerCells() {
-        
+        collectionView.register(ProfileCollectionViewCell.self, forCellWithReuseIdentifier: "ProfileCollectionViewCell")
     }
+}
+
+// MARK: - UICollectionViewDataSource
+extension ViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 1
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProfileCollectionViewCell", for: indexPath) as? ProfileCollectionViewCell
+        cell?.configureCell()
+        return cell ?? UICollectionViewCell()
+    }
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+extension ViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: collectionView.frame.width, height: 310)
+    }
+
 }
 
