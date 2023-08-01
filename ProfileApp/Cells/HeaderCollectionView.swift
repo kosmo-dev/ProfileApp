@@ -7,7 +7,13 @@
 
 import UIKit
 
+protocol HeaderCollectionViewDelegate: AnyObject {
+    func didTapHeaderButton()
+}
+
 final class HeaderCollectionView: UICollectionReusableView {
+    weak var delegate: HeaderCollectionViewDelegate?
+
     private let title: UILabel = {
         let title = UILabel()
         title.textColor = .textColor
@@ -19,6 +25,8 @@ final class HeaderCollectionView: UICollectionReusableView {
     private let button: UIButton = {
         let button = UIButton()
         button.setTitle("", for: .normal)
+        button.addTarget(nil, action: #selector(didTapButton), for: .touchUpInside)
+        button.isHidden = true
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -32,9 +40,17 @@ final class HeaderCollectionView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configureHeader(with text: String) {
+    func configureHeader(with text: String, isButtonVisible: Bool, isEditingMode: Bool) {
         title.text = text
-        button.setImage(UIImage(named: "EditButton"), for: .normal)
+        if isEditingMode {
+            button.setImage(UIImage(named: "ConfirmButton"), for: .normal)
+        } else {
+            button.setImage(UIImage(named: "EditButton"), for: .normal)
+        }
+
+        if isButtonVisible {
+            button.isHidden = false
+        }
     }
 
     private func configureView() {
@@ -52,5 +68,9 @@ final class HeaderCollectionView: UICollectionReusableView {
             button.heightAnchor.constraint(equalToConstant: 24),
             button.widthAnchor.constraint(equalToConstant: 24)
         ])
+    }
+
+    @objc private func didTapButton() {
+        delegate?.didTapHeaderButton()
     }
 }
