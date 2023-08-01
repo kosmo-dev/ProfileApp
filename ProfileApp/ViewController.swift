@@ -7,7 +7,17 @@
 
 import UIKit
 
+protocol ViewControllerProtocol: AnyObject {
+    var collectionViewWidth: CGFloat { get }
+    var isEditingMode: Bool { get }
+    func reloadCollectionView()
+}
+
 final class ViewController: UIViewController {
+    var collectionViewWidth: CGFloat {
+        collectionView.bounds.width - 16 * 2
+    }
+    
     // MARK: - Private Properties
     private var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -16,28 +26,30 @@ final class ViewController: UIViewController {
         return collectionView
     }()
 
-    private var skills = [
-        SkillCellViewModel(title: "MVI/MVVM", isButtonVisible: true),
-        SkillCellViewModel(title: "Kotlin Coroutines", isButtonVisible: true),
-        SkillCellViewModel(title: "Room", isButtonVisible: true),
-        SkillCellViewModel(title: "OkHttp", isButtonVisible: true),
-        SkillCellViewModel(title: "DataStore", isButtonVisible: true),
-        SkillCellViewModel(title: "WorkManager", isButtonVisible: true),
-        SkillCellViewModel(title: "custom view", isButtonVisible: true),
-        SkillCellViewModel(title: "DataStore", isButtonVisible: true),
-        SkillCellViewModel(title: "ООП и SOLID", isButtonVisible: true),
-    ]
+    private var presenter: PresenterProtocol
+    private(set) var isEditingMode = false
 
-    private var isEditingMode = false
+    // MARK: - Initializers
+    init(presenter: PresenterProtocol) {
+        self.presenter = presenter
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     // MARK: - View Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter.viewController = self
         collectionView.dataSource = self
         collectionView.delegate = self
         registerCells()
         configureView()
         configureConstraints()
+        view.layoutIfNeeded()
+        presenter.createViewModel()
     }
 
     // MARK: - Private Methods
@@ -60,6 +72,7 @@ final class ViewController: UIViewController {
         collectionView.register(SkillCollectionViewCell.self, forCellWithReuseIdentifier: "SkillCollectionViewCell")
         collectionView.register(DescriptionCollectionViewCell.self, forCellWithReuseIdentifier: "DescriptionCollectionViewCell")
         collectionView.register(AddNewCollectionViewCell.self, forCellWithReuseIdentifier: "AddNewCollectionViewCell")
+        collectionView.register(TransparentCollectionViewCell.self, forCellWithReuseIdentifier: "TransparentCollectionViewCell")
         collectionView.register(HeaderCollectionView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "SkillsHeaderCollectionView")
         collectionView.register(HeaderCollectionView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AboutHeaderCollectionView")
     }
@@ -72,37 +85,46 @@ extension ViewController: UICollectionViewDataSource {
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section == 1 {
-            if isEditingMode {
-                return skills.count + 1
-            } else {
-                return skills.count
-            }
+            return presenter.skillsViewModel.count
         } else {
             return 1
         }
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        var collectionViewCell: UICollectionViewCell?
+
         if indexPath.section == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProfileCollectionViewCell", for: indexPath) as? ProfileCollectionViewCell
             cell?.configureCell()
-            return cell ?? UICollectionViewCell()
+            collectionViewCell = cell
+
         } else if indexPath.section == 1 {
-            if indexPath.row == skills.count {
+            if isEditingMode && indexPath.row == presenter.skillsViewModel.count - 1 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AddNewCollectionViewCell", for: indexPath) as? AddNewCollectionViewCell
-                return cell ?? UICollectionViewCell()
+                collectionViewCell = cell
+
             } else {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SkillCollectionViewCell", for: indexPath) as? SkillCollectionViewCell
-                cell?.configureCell(viewModel: skills[indexPath.row], visibleButtons: isEditingMode, row: indexPath.row)
-                cell?.delegate = self
-                return cell ?? UICollectionViewCell()
+                let isTransparent = presenter.skillsViewModel[indexPath.row].isTransparent
+                if isTransparent {
+                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TransparentCollectionViewCell", for: indexPath) as? TransparentCollectionViewCell
+                    collectionViewCell = cell
+
+                } else {
+                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SkillCollectionViewCell", for: indexPath) as? SkillCollectionViewCell
+                    cell?.configureCell(viewModel: presenter.skillsViewModel[indexPath.row], visibleButtons: isEditingMode)
+                    cell?.delegate = self
+                    collectionViewCell = cell
+                }
             }
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DescriptionCollectionViewCell", for: indexPath) as? DescriptionCollectionViewCell
             let text = "Experienced software engineer skilled in developing scalable and maintainable systems"
             cell?.configureCell(text)
-            return cell ?? UICollectionViewCell()
+            collectionViewCell = cell
         }
+
+        return collectionViewCell ?? UICollectionViewCell()
     }
 
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
@@ -111,10 +133,12 @@ extension ViewController: UICollectionViewDataSource {
             view?.delegate = self
             view?.configureHeader(with: "Мои навыки", isButtonVisible: true, isEditingMode: isEditingMode)
             return view ?? UICollectionReusableView()
+
         } else if indexPath.section == 2 {
             let view = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AboutHeaderCollectionView", for: indexPath) as? HeaderCollectionView
             view?.configureHeader(with: "О себе", isButtonVisible: false, isEditingMode: isEditingMode)
             return view ?? UICollectionReusableView()
+
         } else {
             return UICollectionReusableView()
         }
@@ -127,10 +151,7 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
         if indexPath.section == 0 {
             return CGSize(width: collectionView.bounds.width, height: 310)
         } else if indexPath.section == 1 {
-            if indexPath.row == skills.count {
-                return CGSize(width: 57, height: 44)
-            }
-            let width = skills[indexPath.row].title.width() + 24 * 3
+            let width = presenter.skillsViewModel[indexPath.row].width
             return CGSize(width: width, height: 44)
         } else {
             return CGSize(width: collectionView.bounds.width, height: 200)
@@ -164,7 +185,7 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
 // MARK: - UICollectionViewDelegate
 extension ViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if isEditingMode, indexPath.row == skills.count {
+        if isEditingMode, indexPath.row == presenter.skillsViewModel.count - 1 {
             showAlertController()
         }
     }
@@ -192,8 +213,7 @@ extension ViewController: UICollectionViewDelegate {
         else {
             return
         }
-        skills.append(SkillCellViewModel(title: text, isButtonVisible: false))
-        collectionView.reloadData()
+        presenter.addNewSkill(text)
     }
 }
 
@@ -201,14 +221,20 @@ extension ViewController: UICollectionViewDelegate {
 extension ViewController: HeaderCollectionViewDelegate {
     func didTapHeaderButton() {
         isEditingMode.toggle()
-        collectionView.reloadData()
+        presenter.createViewModel()
     }
 }
 
 // MARK: - SkillCollectionViewCellDelegate
 extension ViewController: SkillCollectionViewCellDelegate {
-    func didTapDeleteButton(for row: Int) {
-        skills.remove(at: row)
+    func didTapDeleteButton(for title: String) {
+        presenter.removeSkill(title)
+    }
+}
+
+// MARK: - ViewControllerProtocol
+extension ViewController: ViewControllerProtocol {
+    func reloadCollectionView() {
         collectionView.reloadData()
     }
 }

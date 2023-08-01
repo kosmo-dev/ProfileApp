@@ -9,5 +9,6 @@ import Foundation
 
 struct SkillCellViewModel {
     let title: String
-    let isButtonVisible: Bool
+    let width: CGFloat
+    let isTransparent: Bool
 }

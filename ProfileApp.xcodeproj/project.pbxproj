@@ -20,6 +20,8 @@
 		3D5A9D402A795A270031F04C /* DescriptionCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D5A9D3F2A795A270031F04C /* DescriptionCollectionViewCell.swift */; };
 		3D5A9D422A79616B0031F04C /* SkillCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D5A9D412A79616B0031F04C /* SkillCellViewModel.swift */; };
 		3D5A9D442A796CD20031F04C /* AddNewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D5A9D432A796CD20031F04C /* AddNewCollectionViewCell.swift */; };
+		3D5A9D462A797A490031F04C /* Presenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D5A9D452A797A490031F04C /* Presenter.swift */; };
+		3D5A9D482A797AA60031F04C /* TransparentCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D5A9D472A797AA60031F04C /* TransparentCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +40,8 @@
 		3D5A9D3F2A795A270031F04C /* DescriptionCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescriptionCollectionViewCell.swift; sourceTree = "<group>"; };
 		3D5A9D412A79616B0031F04C /* SkillCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillCellViewModel.swift; sourceTree = "<group>"; };
 		3D5A9D432A796CD20031F04C /* AddNewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewCollectionViewCell.swift; sourceTree = "<group>"; };
+		3D5A9D452A797A490031F04C /* Presenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Presenter.swift; sourceTree = "<group>"; };
+		3D5A9D472A797AA60031F04C /* TransparentCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransparentCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,7 +77,9 @@
 				3D5A9D212A78F7190031F04C /* AppDelegate.swift */,
 				3D5A9D232A78F7190031F04C /* SceneDelegate.swift */,
 				3D5A9D252A78F7190031F04C /* ViewController.swift */,
+				3D5A9D452A797A490031F04C /* Presenter.swift */,
 				3D5A9D372A7902BF0031F04C /* ProfileCollectionViewCell.swift */,
+				3D5A9D472A797AA60031F04C /* TransparentCollectionViewCell.swift */,
 				3D5A9D392A7934780031F04C /* HeaderCollectionView.swift */,
 				3D5A9D3B2A793B5F0031F04C /* SkillCollectionViewCell.swift */,
 				3D5A9D432A796CD20031F04C /* AddNewCollectionViewCell.swift */,
@@ -160,10 +166,12 @@
 			files = (
 				3D5A9D3E2A794D2D0031F04C /* String+Extension.swift in Sources */,
 				3D5A9D262A78F7190031F04C /* ViewController.swift in Sources */,
+				3D5A9D482A797AA60031F04C /* TransparentCollectionViewCell.swift in Sources */,
 				3D5A9D3A2A7934780031F04C /* HeaderCollectionView.swift in Sources */,
 				3D5A9D222A78F7190031F04C /* AppDelegate.swift in Sources */,
 				3D5A9D3C2A793B5F0031F04C /* SkillCollectionViewCell.swift in Sources */,
 				3D5A9D242A78F7190031F04C /* SceneDelegate.swift in Sources */,
+				3D5A9D462A797A490031F04C /* Presenter.swift in Sources */,
 				3D5A9D362A7900970031F04C /* UIColor+Extension.swift in Sources */,
 				3D5A9D402A795A270031F04C /* DescriptionCollectionViewCell.swift in Sources */,
 				3D5A9D442A796CD20031F04C /* AddNewCollectionViewCell.swift in Sources */,

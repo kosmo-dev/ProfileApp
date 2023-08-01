@@ -8,7 +8,7 @@
 import UIKit
 
 protocol SkillCollectionViewCellDelegate: AnyObject {
-    func didTapDeleteButton(for row: Int)
+    func didTapDeleteButton(for title: String)
 }
 
 final class SkillCollectionViewCell: UICollectionViewCell {
@@ -41,8 +41,6 @@ final class SkillCollectionViewCell: UICollectionViewCell {
         return stackView
     }()
 
-    private var row: Int?
-
     override init(frame: CGRect) {
         super.init(frame: frame)
         configureView()
@@ -52,7 +50,7 @@ final class SkillCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configureCell(viewModel: SkillCellViewModel, visibleButtons: Bool, row: Int) {
+    func configureCell(viewModel: SkillCellViewModel, visibleButtons: Bool) {
         title.text = viewModel.title
         if visibleButtons {
             deleteButton.isHidden = false
@@ -61,7 +59,6 @@ final class SkillCollectionViewCell: UICollectionViewCell {
             deleteButton.isHidden = true
             stackView.removeArrangedSubview(deleteButton)
         }
-        self.row = row
     }
 
     private func configureView() {
@@ -80,13 +77,12 @@ final class SkillCollectionViewCell: UICollectionViewCell {
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -12),
 
             deleteButton.widthAnchor.constraint(equalToConstant: 14),
-            deleteButton.heightAnchor.constraint(equalToConstant: 14)
         ])
     }
 
     @objc private func didTapDeleteButton() {
-        if let row {
-            delegate?.didTapDeleteButton(for: row)
+        if let text = title.text {
+            delegate?.didTapDeleteButton(for: text)
         }
     }
 }
