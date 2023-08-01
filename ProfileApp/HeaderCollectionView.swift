@@ -32,8 +32,8 @@ final class HeaderCollectionView: UICollectionReusableView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configureHeader() {
-        title.text = "Мои навыки"
+    func configureHeader(with text: String) {
+        title.text = text
         button.setImage(UIImage(named: "EditButton"), for: .normal)
     }
 
@@ -42,12 +42,13 @@ final class HeaderCollectionView: UICollectionReusableView {
         addSubview(button)
 
         NSLayoutConstraint.activate([
-            title.topAnchor.constraint(equalTo: topAnchor),
+            title.topAnchor.constraint(equalTo: topAnchor, constant: 20),
             title.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            title.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4),
+            title.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
 
             button.leadingAnchor.constraint(equalTo: title.trailingAnchor),
             button.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            button.centerYAnchor.constraint(equalTo: title.centerYAnchor),
             button.heightAnchor.constraint(equalToConstant: 24),
             button.widthAnchor.constraint(equalToConstant: 24)
         ])

@@ -81,7 +81,7 @@ final class ProfileCollectionViewCell: UICollectionViewCell {
     func configureCell() {
         title.text = "Профиль"
         name.text = "Иванов Иван Иванович"
-        descriptionLabel.text = "Middle iOS-разработчик опыт более 2-х лет"
+        descriptionLabel.text = "Middle iOS-разработчик, опыт более 2-х лет"
         geotagLabel.text = "Воронеж"
     }
 
@@ -102,12 +102,12 @@ final class ProfileCollectionViewCell: UICollectionViewCell {
             photo.widthAnchor.constraint(equalToConstant: 120),
 
             name.topAnchor.constraint(equalTo: photo.bottomAnchor, constant: 16),
-            name.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 51),
-            name.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -51),
+            name.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 35),
+            name.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -35),
 
             descriptionLabel.topAnchor.constraint(equalTo: name.bottomAnchor, constant: 4),
-            descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 51),
-            descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -51),
+            descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 35),
+            descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -35),
 
             stackview.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 2),
             stackview.centerXAnchor.constraint(equalTo: centerXAnchor),
